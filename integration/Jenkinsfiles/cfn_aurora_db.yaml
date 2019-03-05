@@ -13,13 +13,13 @@ Parameters:
   SUBNET2:
     Type: String
 
-  NX_DB_ADMINNAME:
+  NXDBADMINNAME:
     Type: String
 
-  NX_DB_ADMINUSER:
+  NXDBADMINUSER:
     Type: String
 
-  NX_DB_ADMINPASS:
+  NXDBADMINPASS:
     Type: String
 
 Resources:
@@ -28,7 +28,7 @@ Resources:
     Type: "AWS::RDS::DBCluster"
     Properties:
       BackupRetentionPeriod: 1
-      DatabaseName: !Ref NX_DB_ADMINNAME
+      DatabaseName: !Ref NXDBADMINNAME
       DBClusterIdentifier: "nuxeo"
       DBClusterParameterGroupName: "default.aurora-postgresql9.6"
       DBSubnetGroupName: !Ref AuroraDBSubnetGroup
@@ -36,8 +36,8 @@ Resources:
       Engine: "aurora-postgresql"
       EngineMode: "provisioned"
       EngineVersion: "9.6.8"
-      MasterUsername: !Ref NX_DB_ADMINUSER
-      MasterUserPassword: !Ref NX_DB_ADMINPASS
+      MasterUsername: !Ref NXDBADMINUSER
+      MasterUserPassword: !Ref NXDBADMINPASS
       Port: 5432
       StorageEncrypted: true
       VpcSecurityGroupIds:
