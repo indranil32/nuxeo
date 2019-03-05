@@ -63,7 +63,7 @@ node(env.NODELABEL) {
                                         SUBNET2=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-SubnetIds'].Value" --output text --region eu-west-1 |cut -d"," -f 2)
                                         aws cloudformation create-stack --stack-name aurora-db --template-body file://\$WORKSPACE/integration/Jenkinsfiles/cfn_aurora_db.yaml --capabilities CAPABILITY_NAMED_IAM \
                                         --parameters ParameterKey=VPC,ParameterValue=$VPC ParameterKey=SUBNET1,ParameterValue=$SUBNET1 ParameterKey=SUBNET2,ParameterValue=$SUBNET2 ParameterKey=NX_DB_ADMINNAME,ParameterValue=$NX_DB_ADMINNAME \
-                                        ParameterKey=NX_DB_ADMINUSER,ParameterValue=$NX_DB_ADMINUSER ParameterKey=NX_DB_ADMINPASS,ParameterValue=$NX_DB_ADMINPASS -region eu-west-1 ||true
+                                        ParameterKey=NX_DB_ADMINUSER,ParameterValue=$NX_DB_ADMINUSER ParameterKey=NX_DB_ADMINPASS,ParameterValue=$NX_DB_ADMINPASS --region eu-west-1 ||true
                                         aws cloudformation wait stack-create-complete --stack-name aurora-db --region eu-west-1 ||true
                                     '''
                                     script {
