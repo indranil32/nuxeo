@@ -13,6 +13,9 @@ Parameters:
   SUBNET2:
     Type: String
 
+  NX_DB_ADMINNAME:
+    Type: String
+
 Resources:
 
   NuxeoDBCluster:
