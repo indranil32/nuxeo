@@ -61,9 +61,22 @@ node(env.NODELABEL) {
                                         VPC=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-VPCID'].Value" --output text --region eu-west-1)
                                         SUBNET1=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-SubnetIds'].Value" --output text --region eu-west-1 |cut -d"," -f 1) 
                                         SUBNET2=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-SubnetIds'].Value" --output text --region eu-west-1 |cut -d"," -f 2)
-                                        aws cloudformation create-stack --stack-name aurora-db --template-body file://\$WORKSPACE/integration/Jenkinsfiles/cfn_aurora_db.yaml --capabilities CAPABILITY_NAMED_IAM \
-                                        --parameters ParameterKey=VPC,ParameterValue=$VPC ParameterKey=SUBNET1,ParameterValue=$SUBNET1 ParameterKey=SUBNET2,ParameterValue=$SUBNET2 ParameterKey=NXDBADMINNAME,ParameterValue=$NX_DB_ADMINNAME \
-                                        ParameterKey=NXDBADMINUSER,ParameterValue=$NX_DB_ADMINUSER ParameterKey=NXDBADMINPASS,ParameterValue=$NX_DB_ADMINPASS  --region eu-west-1 ||true
+                                        
+                                      JSON_STRING=$( jq -n \
+                                      --arg vpc "$VPC" \
+                                      --arg subnet1 "$SUBNET1" \
+                                      --arg subnet2 "$SUBNET2" \
+                                      --arg db_adminname "$NX_DB_ADMINNAME" \
+                                      --arg db_adminuser "$NX_DB_ADMINUSER" \
+                                      --arg db_adminpass "$NX_DB_ADMINPASS" \
+                                      '[{ParameterKey: "VPC", ParameterValue: $vpc}, 
+                                        {ParameterKey: "SUBNET1", ParameterValue: "$subnet1"},
+                                        {ParameterKey: "SUBNET2", ParameterValue: "$subnet2"}, 
+                                        {ParameterKey: "NXDBADMINNAME", ParameterValue: "$db_adminname"},
+                                        {ParameterKey: "NXDBADMINUSER", ParameterValue: "$db_adminuser"},
+                                        {ParameterKey: "NXDBADMINPASS", ParameterValue: "$db_adminpass"}
+                                        ]' ) > cfn_config.json
+                                        aws cloudformation create-stack --stack-name aurora-db --template-body file://\$WORKSPACE/integration/Jenkinsfiles/cfn_aurora_db.yaml --parameters file://\$WORKSPACE/integration/Jenkinsfile/cfn_config.json --capabilities CAPABILITY_NAMED_IAM --region eu-west-1 ||true
                                         aws cloudformation wait stack-create-complete --stack-name aurora-db --region eu-west-1 ||true
                                     '''
                                     script {
