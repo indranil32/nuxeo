@@ -53,9 +53,6 @@ node(env.NODELABEL) {
             try {
                 stage('tests') {
                     withBuildStatus("utest/aurora-$DBPROFILE-$DBVERSION", 'https://github.com/nuxeo/nuxeo', sha, "${BUILD_URL}") {
-                        script {
-                            DATABASE_ID = sh(returnStdout: true, script: 'aws cloudformation list-exports --query "Exports[?Name==\\`aurora-db-DatabaseId\\`].Value" --no-paginate --output text --region eu-west-1')
-                        }
                         sh'''
                         #!/bin/bash -x
                             VPC=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-VPCID'].Value" --output text --region eu-west-1)
@@ -65,6 +62,9 @@ node(env.NODELABEL) {
                             --parameters ParameterKey=VPC,ParameterValue=$VPC ParameterKey=SUBNET1,ParameterValue=$SUBNET1 ParameterKey=SUBNET2,ParameterValue=$SUBNET2 --region eu-west-1 ||true
                             aws cloudformation wait stack-create-complete --stack-name aurora-db --region eu-west-1 ||true
                         '''
+                        script {
+                            DATABASE_ID = sh(returnStdout: true, script: 'aws cloudformation list-exports --query "Exports[?Name==\\`aurora-db-DatabaseId\\`].Value" --no-paginate --output text --region eu-west-1')
+                        }
                         DATABASE_ID = DATABASE_ID.trim();
                         withEnv(["NX_DB_HOST=${DATABASE_ID}", "NX_DB_PORT=5432", "NX_DB_ADMINNAME=nuxeoAurora"]) {
                             withCredentials([usernamePassword(credentialsId: 'AURORA_PGSQL', usernameVariable: 'NX_DB_ADMINUSER', passwordVariable: 'NX_DB_ADMINPASS')]) {
