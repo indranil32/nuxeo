@@ -58,9 +58,9 @@ node(env.NODELABEL) {
                                 try {
                                     sh'''
                                     #!/bin/bash -x
-                                        VPC=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-VPCID'].Value" --output text --region eu-west-1)
-                                        SUBNET1=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-SubnetIds'].Value" --output text --region eu-west-1 |cut -d"," -f 1) 
-                                        SUBNET2=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-SubnetIds'].Value" --output text --region eu-west-1 |cut -d"," -f 2)
+                                        VPC=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-revival-VPCID'].Value" --output text --region eu-west-1)
+                                        SUBNET1=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-revival-SubnetIds'].Value" --output text --region eu-west-1 |cut -d"," -f 1) 
+                                        SUBNET2=$(aws cloudformation list-exports --query "Exports[?Name=='qa-generic-revival-SubnetIds'].Value" --output text --region eu-west-1 |cut -d"," -f 2)
                                         
                                       JSON_STRING=$( jq -n \
                                       --arg vpc "$VPC" \
