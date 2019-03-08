@@ -7,12 +7,6 @@ Parameters:
   VPC:
     Type: String
 
-  SUBNET1:
-    Type: String
-
-  SUBNET2:
-    Type: String
-
   NXDBADMINNAME:
     Type: String
 
@@ -54,7 +48,9 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow Postgresql port 5432 From VPC qa-generic
-      VpcId: !Ref VPC
+      VpcId:
+        Fn::ImportValue:
+          !Join [ "-", [ !Ref VPC, "VPCID" ] ]
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 5432
@@ -76,8 +72,10 @@ Resources:
     Properties:
       DBSubnetGroupDescription: "The EC2 Subnet IDs for the DB Subnet Group"
       SubnetIds:
-        - !Ref SUBNET1
-        - !Ref SUBNET2
+        - Fn::ImportValue:
+            !Join [ '-', [ !Ref VPC, "Subnet1AID" ] ]
+        - Fn::ImportValue:
+            !Join [ '-', [ !Ref VPC, "Subnet1BID" ] ]
       Tags:
         -
           Key: "billing-category"
