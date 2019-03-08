@@ -70,7 +70,7 @@ node(env.NODELABEL) {
                                           {ParameterKey: "NXDBADMINPASS", ParameterValue: $db_adminpass}
                                           ]' > \$WORKSPACE/integration/Jenkinsfiles/cfn_config.json
                                         aws cloudformation create-stack --stack-name aurora-db --template-body file://\$WORKSPACE/integration/Jenkinsfiles/cfn_aurora_db.yaml --parameters file://\$WORKSPACE/integration/Jenkinsfiles/cfn_config.json --capabilities CAPABILITY_NAMED_IAM --region eu-west-1 ||true
-                                        aws cloudformation wait stack-create-complete --stack-name aurora-db --region eu-west-1 ||true
+                                        aws cloudformation wait stack-create-complete --stack-name aurora-db --region eu-west-1 ||aws cloudformation delete-stack --stack-name aurora-db --region eu-west-1 ||true
                                     '''
                                     script {
                                       DATABASE_ID = sh(returnStdout: true, script: 'aws cloudformation list-exports --query "Exports[?Name==\\`aurora-db-DatabaseId\\`].Value" --no-paginate --output text --region eu-west-1')
