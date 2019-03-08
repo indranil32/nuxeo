@@ -65,9 +65,9 @@ node(env.NODELABEL) {
                                         --arg db_adminuser "$NX_DB_ADMINUSER" \
                                         --arg db_adminpass "$NX_DB_ADMINPASS" \
                                         '[{ParameterKey: "VPC", ParameterValue: $vpc}, 
-                                          {ParameterKey: "NXDBADMINNAME", ParameterValue: "$db_adminname"},
-                                          {ParameterKey: "NXDBADMINUSER", ParameterValue: "$db_adminuser"},
-                                          {ParameterKey: "NXDBADMINPASS", ParameterValue: "$db_adminpass"}
+                                          {ParameterKey: "NXDBADMINNAME", ParameterValue: $db_adminname},
+                                          {ParameterKey: "NXDBADMINUSER", ParameterValue: $db_adminuser},
+                                          {ParameterKey: "NXDBADMINPASS", ParameterValue: $db_adminpass}
                                           ]' ) > cfn_config.json
                                         aws cloudformation create-stack --stack-name aurora-db --template-body file://\$WORKSPACE/integration/Jenkinsfiles/cfn_aurora_db.yaml --parameters file://\$WORKSPACE/integration/Jenkinsfile/cfn_config.json --capabilities CAPABILITY_NAMED_IAM --region eu-west-1 ||true
                                         aws cloudformation wait stack-create-complete --stack-name aurora-db --region eu-west-1 ||true
