@@ -576,7 +576,7 @@ public class UserInvitationComponent extends DefaultComponent implements UserInv
             public void run() {
                 String query = "SELECT * FROM Document WHERE ecm:currentLifeCycleState != 'validated' AND"
                         + " ecm:mixinType = '" + getConfiguration(configurationName).getRequestDocType()
-                        + "' AND docinfo:documentId = '%s' AND"
+                        + "' AND docinfo:documentId = '%s' AND "
                         + getConfiguration(configurationName).getUserInfoUsernameField()
                         + " = '%s' AND ecm:isCheckedInVersion = 0";
                 query = String.format(query, docId, username);
