@@ -57,7 +57,7 @@ public class UTF8CharsetConverter implements Converter {
         try {
             transcodedBlob = convert(originalBlob);
         } catch (IOException | ConversionException e) {
-            throw new ConversionException("Cannot transcode " + path + " to UTF-8", e);
+            throw new ConversionException("Cannot transcode " + path + " to UTF-8", e, blobHolder);
         }
         return new SimpleBlobHolder(transcodedBlob);
     }
@@ -73,7 +73,7 @@ public class UTF8CharsetConverter implements Converter {
         }
         if (StringUtils.isEmpty(encoding)) {
             try (InputStream in = blob.getStream()) {
-                encoding = detectEncoding(in);
+                encoding = detectEncoding(blob, in);
             }
         }
         Blob newBlob;
@@ -95,7 +95,7 @@ public class UTF8CharsetConverter implements Converter {
         return newBlob;
     }
 
-    protected String detectEncoding(InputStream in) throws IOException, ConversionException {
+    protected String detectEncoding(Blob blob, InputStream in) throws IOException, ConversionException {
         if (!in.markSupported()) {
             // detector.setText requires mark
             in = new BufferedInputStream(in);
@@ -104,7 +104,7 @@ public class UTF8CharsetConverter implements Converter {
         detector.setText(in);
         CharsetMatch charsetMatch = detector.detect();
         if (charsetMatch == null) {
-            throw new ConversionException("Cannot detect source charset.");
+            throw new ConversionException("Cannot detect source charset.", blob);
         }
         return charsetMatch.getName();
     }

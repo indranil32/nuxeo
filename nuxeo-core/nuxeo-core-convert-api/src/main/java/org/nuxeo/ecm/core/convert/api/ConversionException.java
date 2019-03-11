@@ -19,7 +19,16 @@
  */
 package org.nuxeo.ecm.core.convert.api;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.blobholder.BlobHolder;
+import org.nuxeo.ecm.core.api.blobholder.DocumentBlobHolder;
+import org.nuxeo.ecm.core.blob.ManagedBlob;
 
 /**
  * Base exception raised by the {@link ConversionService}.
@@ -44,6 +53,58 @@ public class ConversionException extends NuxeoException {
 
     public ConversionException(Throwable cause) {
         super(cause);
+    }
+
+    public ConversionException(String message, BlobHolder blobHolder) {
+        super(message);
+        addInfos(blobHolder);
+    }
+
+    public ConversionException(String message, Throwable cause, BlobHolder blobHolder) {
+        super(message, cause);
+        addInfos(blobHolder);
+
+    }
+
+    public ConversionException(Throwable cause, BlobHolder blobHolder) {
+        super(cause);
+        addInfos(blobHolder);
+    }
+
+    public ConversionException(String message, Throwable cause, Blob blob) {
+        super(message, cause);
+        addInfos(Collections.singleton(blob));
+    }
+
+    public ConversionException(String message, Blob blob) {
+        super(message);
+        addInfos(Collections.singleton(blob));
+    }
+
+    protected void addInfos(BlobHolder blobHolder) {
+        if (blobHolder instanceof DocumentBlobHolder) {
+            DocumentBlobHolder documentBlobHolder = (DocumentBlobHolder) blobHolder;
+            addInfo(String.format("Document Id = %s", documentBlobHolder.getDocument().getId()));
+        }
+
+        Collection<Blob> blobs = new HashSet<>();
+        if (blobHolder.getBlob() != null) {
+            blobs.add(blobHolder.getBlob());
+        }
+
+        if (CollectionUtils.isNotEmpty(blobHolder.getBlobs())) {
+            blobs.addAll(blobHolder.getBlobs());
+        }
+
+        addInfos(blobs);
+    }
+
+    protected void addInfos(Collection<Blob> blobs) {
+        blobs.stream().filter(b -> b instanceof ManagedBlob).map(ManagedBlob.class::cast).forEach(mb -> {
+            addInfo(String.format("Blob Key : %s", mb.getKey()));
+            addInfo(String.format("Blob Provider : %s", mb.getProviderId()));
+        });
+
     }
 
 }

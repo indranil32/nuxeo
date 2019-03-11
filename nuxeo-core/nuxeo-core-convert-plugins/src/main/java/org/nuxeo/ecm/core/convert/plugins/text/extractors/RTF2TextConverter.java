@@ -59,7 +59,7 @@ public class RTF2TextConverter implements Converter {
             }
             return new SimpleCachableBlobHolder(blob);
         } catch (IOException | BadLocationException e) {
-            throw new ConversionException("Error during Word2Text conversion", e);
+            throw new ConversionException("Error during Word2Text conversion", e, blobHolder);
         } finally {
             if (f != null) {
                 f.delete();

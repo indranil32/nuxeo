@@ -50,7 +50,7 @@ public class XML2TextConverter implements Converter {
             Xml2TextHandler xml2text = new Xml2TextHandler();
             return xml2text.parse(stream);
         } catch (IOException | SAXException | ParserConfigurationException e) {
-            throw new ConversionException("Error during XML2Text conversion", e);
+            throw new ConversionException("Error during XML2Text conversion", e, blob);
         }
     }
 
