@@ -262,8 +262,10 @@ public class StreamWorkManager extends WorkManagerImpl {
         // create a single topology with one root per work pool
         Topology.Builder builder = Topology.builder();
         List<WorkQueueDescriptor> descriptors = getDescriptors(QUEUES_EP);
-        descriptors.stream().filter(WorkQueueDescriptor::isProcessingEnabled).forEach(d -> builder.addComputation(
-                () -> new WorkComputation(d.getId()), Collections.singletonList("i1:" + d.getId())));
+        descriptors.stream()
+                   .filter(WorkQueueDescriptor::isProcessingEnabled)
+                   .forEach(d -> builder.addComputation(() -> new WorkComputation(d.getId()),
+                           Collections.singletonList("i1:" + d.getId())));
         topology = builder.build();
         settings = new Settings(DEFAULT_CONCURRENCY, getPartitions(DEFAULT_CONCURRENCY), getCodec());
         descriptors.forEach(item -> settings.setConcurrency(item.getId(), item.getMaxThreads()));
@@ -370,12 +372,12 @@ public class StreamWorkManager extends WorkManagerImpl {
     @Override
     public int getQueueSize(String queueId, Work.State state) {
         switch (state) {
-            case SCHEDULED:
-                return getMetrics(queueId).getScheduled().intValue();
-            case RUNNING:
-                return getMetrics(queueId).getRunning().intValue();
-            default:
-                return 0;
+        case SCHEDULED:
+            return getMetrics(queueId).getScheduled().intValue();
+        case RUNNING:
+            return getMetrics(queueId).getRunning().intValue();
+        default:
+            return 0;
         }
     }
 

@@ -64,8 +64,9 @@ public class RestletServlet extends HttpServlet {
         Router restletRouter = new Router();
 
         // get the service
-        PluggableRestletService service = (PluggableRestletService) Framework.getRuntime().getComponent(
-                PluggableRestletService.NAME);
+        PluggableRestletService service = (PluggableRestletService) Framework.getRuntime()
+                                                                             .getComponent(
+                                                                                     PluggableRestletService.NAME);
         if (service == null) {
             log.error("Unable to get Service " + PluggableRestletService.NAME);
             throw new ServletException("Can't initialize Nuxeo Pluggable Restlet Service");

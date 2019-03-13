@@ -252,7 +252,8 @@ public class SecurityActionsBean extends InputController implements SecurityActi
                 }
             }
         } else {
-            log.debug("no entry for documentType in visibleUserPermissions this should never happend, using default mapping ...");
+            log.debug(
+                    "no entry for documentType in visibleUserPermissions this should never happend, using default mapping ...");
         }
 
         if (grant) {
@@ -417,8 +418,8 @@ public class SecurityActionsBean extends InputController implements SecurityActi
         String documentType = navigationContext.getCurrentDocument().getType();
 
         // BBB: use the platform service if it defines permissions (deprecated)
-        UIPermissionService service = (UIPermissionService) Framework.getRuntime().getComponent(
-                UIPermissionService.NAME);
+        UIPermissionService service = (UIPermissionService) Framework.getRuntime()
+                                                                     .getComponent(UIPermissionService.NAME);
         String[] settablePermissions = service.getUIPermissions(documentType);
 
         if (settablePermissions == null || settablePermissions.length == 0) {

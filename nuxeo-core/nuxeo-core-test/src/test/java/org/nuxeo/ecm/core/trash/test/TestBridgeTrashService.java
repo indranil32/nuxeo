@@ -19,8 +19,8 @@
 package org.nuxeo.ecm.core.trash.test;
 
 import static org.nuxeo.ecm.core.trash.TrashServiceImpl.MIGRATION_ID;
-import static org.nuxeo.ecm.core.trash.TrashServiceImpl.NAME;
 import static org.nuxeo.ecm.core.trash.TrashServiceImpl.MIGRATION_STEP_LIFECYCLE_TO_PROPERTY;
+import static org.nuxeo.ecm.core.trash.TrashServiceImpl.NAME;
 
 import javax.inject.Inject;
 

@@ -102,8 +102,8 @@ public class ESAuditPageProvider extends AbstractPageProvider<LogEntry> implemen
         searchRequest.source().size((int) getMinMaxPageSize());
 
         for (SortInfo sortInfo : getSortInfos()) {
-            searchRequest.source().sort(sortInfo.getSortColumn(),
-                    sortInfo.getSortAscending() ? SortOrder.ASC : SortOrder.DESC);
+            searchRequest.source()
+                         .sort(sortInfo.getSortColumn(), sortInfo.getSortAscending() ? SortOrder.ASC : SortOrder.DESC);
         }
         SearchResponse searchResponse = getESBackend().search(searchRequest);
         List<LogEntry> entries = new ArrayList<>();
@@ -219,7 +219,8 @@ public class ESAuditPageProvider extends AbstractPageProvider<LogEntry> implemen
             String fixedPart = getFixedPart();
             if (!StringUtils.isBlank(quickFiltersClause)) {
                 fixedPart = (!StringUtils.isBlank(fixedPart))
-                        ? NXQLQueryBuilder.appendClause(fixedPart, quickFiltersClause) : quickFiltersClause;
+                        ? NXQLQueryBuilder.appendClause(fixedPart, quickFiltersClause)
+                        : quickFiltersClause;
             }
 
             // Where clause based on DocumentModel

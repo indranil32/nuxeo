@@ -57,8 +57,8 @@ public class ExternalRequestFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
@@ -81,8 +81,9 @@ public class ExternalRequestFilter implements Filter {
                 }
 
                 if (requestedUrl != null) {
-                    PluggableAuthenticationService service = (PluggableAuthenticationService) Framework.getRuntime().getComponent(
-                            PluggableAuthenticationService.NAME);
+                    PluggableAuthenticationService service = (PluggableAuthenticationService) Framework.getRuntime()
+                                                                                                       .getComponent(
+                                                                                                               PluggableAuthenticationService.NAME);
                     String baseURL = service.getBaseURL(request);
                     HttpServletResponse httpResponse = (HttpServletResponse) response;
                     httpResponse.sendRedirect(baseURL + requestedUrl);

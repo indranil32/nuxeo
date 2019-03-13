@@ -154,9 +154,8 @@ public class TestAuditMigration {
         String singleQuery = "            {\"query\": {\n" + "                \"bool\" : {\n"
                 + "                  \"must\" : {\n" + "                    \"match\" : {\n"
                 + "                      \"docUUID\" : {\n" + "                        \"query\" : \"mydoc\"\n"
-                + "                      }\n"
-                + "                    }\n" + "                  }\n" + "                }\n"
-                + "              }}          \n" + "";
+                + "                      }\n" + "                    }\n" + "                  }\n"
+                + "                }\n" + "              }}          \n" + "";
         List<LogEntry> migratedEntries = (List<LogEntry>) backend.nativeQuery(singleQuery, 0, 1001);
         Assert.assertEquals(1000, migratedEntries.size());
     }

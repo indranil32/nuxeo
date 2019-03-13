@@ -81,8 +81,9 @@ public class DefaultAuditBackend extends AbstractAuditBackend {
 
     @Override
     public int getApplicationStartedOrder() {
-        DefaultComponent component = (DefaultComponent) Framework.getRuntime().getComponent(
-                "org.nuxeo.ecm.core.persistence.PersistenceComponent");
+        DefaultComponent component = (DefaultComponent) Framework.getRuntime()
+                                                                 .getComponent(
+                                                                         "org.nuxeo.ecm.core.persistence.PersistenceComponent");
         return component.getApplicationStartedOrder() + 1;
     }
 

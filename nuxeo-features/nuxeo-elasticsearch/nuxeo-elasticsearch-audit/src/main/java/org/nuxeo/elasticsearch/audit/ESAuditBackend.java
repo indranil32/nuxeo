@@ -177,10 +177,12 @@ public class ESAuditBackend extends AbstractAuditBackend implements AuditBackend
 
     @Override
     public int getApplicationStartedOrder() {
-        int elasticOrder = ((DefaultComponent) Framework.getRuntime().getComponent(
-                "org.nuxeo.elasticsearch.ElasticSearchComponent")).getApplicationStartedOrder();
-        int uidgenOrder = ((DefaultComponent) Framework.getRuntime().getComponent(
-                "org.nuxeo.ecm.core.uidgen.UIDGeneratorService")).getApplicationStartedOrder();
+        int elasticOrder = ((DefaultComponent) Framework.getRuntime()
+                                                        .getComponent("org.nuxeo.elasticsearch.ElasticSearchComponent"))
+                                                                                                                        .getApplicationStartedOrder();
+        int uidgenOrder = ((DefaultComponent) Framework.getRuntime()
+                                                       .getComponent("org.nuxeo.ecm.core.uidgen.UIDGeneratorService"))
+                                                                                                                      .getApplicationStartedOrder();
         return Integer.max(elasticOrder, uidgenOrder) + 1;
     }
 
@@ -258,8 +260,8 @@ public class ESAuditBackend extends AbstractAuditBackend implements AuditBackend
             logEntries = buildLogEntries(searchResponse);
             // Scroll on next results
             for (; //
-            searchResponse.getHits().getHits().length > 0
-                    && logEntries.size() < searchResponse.getHits().getTotalHits(); //
+                    searchResponse.getHits().getHits().length > 0
+                            && logEntries.size() < searchResponse.getHits().getTotalHits(); //
                     searchResponse = runNextScroll(searchResponse.getScrollId(), keepAlive)) {
                 // Build log entries
                 logEntries.addAll(buildLogEntries(searchResponse));
@@ -377,8 +379,11 @@ public class ESAuditBackend extends AbstractAuditBackend implements AuditBackend
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         SearchModule searchModule = new SearchModule(Settings.EMPTY, false, Collections.emptyList());
         try {
-            try (XContentParser parser = XContentFactory.xContent(XContentType.JSON).createParser(
-                    new NamedXContentRegistry(searchModule.getNamedXContents()), THROW_UNSUPPORTED_OPERATION, query)) {
+            try (XContentParser parser = XContentFactory.xContent(XContentType.JSON)
+                                                        .createParser(
+                                                                new NamedXContentRegistry(
+                                                                        searchModule.getNamedXContents()),
+                                                                THROW_UNSUPPORTED_OPERATION, query)) {
                 searchSourceBuilder.parseXContent(parser);
             }
         } catch (IOException | ParsingException e) {
@@ -516,11 +521,8 @@ public class ESAuditBackend extends AbstractAuditBackend implements AuditBackend
 
     @Override
     public Long getEventsCount(String eventId) {
-        SearchResponse res = esClient.search(
-                new SearchRequest(getESIndexName()).source(
-                        new SearchSourceBuilder().query(
-                                QueryBuilders.constantScoreQuery(QueryBuilders.termQuery("eventId", eventId)))
-                                                 .size(0)));
+        SearchResponse res = esClient.search(new SearchRequest(getESIndexName()).source(new SearchSourceBuilder().query(
+                QueryBuilders.constantScoreQuery(QueryBuilders.termQuery("eventId", eventId))).size(0)));
         return res.getHits().getTotalHits();
     }
 

@@ -35,8 +35,8 @@ public class MockFilterChain implements FilterChain {
 
     protected PluggableAuthenticationService getPAS() {
         if (pas == null) {
-            pas = (PluggableAuthenticationService) Framework.getRuntime().getComponent(
-                    PluggableAuthenticationService.NAME);
+            pas = (PluggableAuthenticationService) Framework.getRuntime()
+                                                            .getComponent(PluggableAuthenticationService.NAME);
 
         }
         return pas;

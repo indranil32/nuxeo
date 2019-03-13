@@ -56,8 +56,8 @@ import edu.yale.its.tp.cas.client.ServiceTicketValidator;
  * @author Benjamin Jalon
  * @author Thierry Martins
  */
-public class Cas2Authenticator implements NuxeoAuthenticationPlugin, NuxeoAuthenticationPluginLogoutExtension,
-        LoginResponseHandler {
+public class Cas2Authenticator
+        implements NuxeoAuthenticationPlugin, NuxeoAuthenticationPluginLogoutExtension, LoginResponseHandler {
 
     protected static final String CAS_SERVER_HEADER_KEY = "CasServer";
 
@@ -206,8 +206,9 @@ public class Cas2Authenticator implements NuxeoAuthenticationPlugin, NuxeoAuthen
         if (httpRequest.getRequestURI() == null) {
             return false;
         }
-        PluggableAuthenticationService service = (PluggableAuthenticationService) Framework.getRuntime().getComponent(
-                PluggableAuthenticationService.NAME);
+        PluggableAuthenticationService service = (PluggableAuthenticationService) Framework.getRuntime()
+                                                                                           .getComponent(
+                                                                                                   PluggableAuthenticationService.NAME);
         if (service == null) {
             return false;
         }
@@ -357,21 +358,20 @@ public class Cas2Authenticator implements NuxeoAuthenticationPlugin, NuxeoAuthen
 
         ProxyTicketValidator proxyValidator;
         try {
-            proxyValidator = (ProxyTicketValidator) Framework.getRuntime().getContext().loadClass(
-                    proxyValidatorClassName).newInstance();
+            proxyValidator = (ProxyTicketValidator) Framework.getRuntime()
+                                                             .getContext()
+                                                             .loadClass(proxyValidatorClassName)
+                                                             .newInstance();
         } catch (InstantiationException e) {
-            log.error(
-                    "checkProxyCasTicket during the ProxyTicketValidator initialization with InstantiationException:",
+            log.error("checkProxyCasTicket during the ProxyTicketValidator initialization with InstantiationException:",
                     e);
             return null;
         } catch (IllegalAccessException e) {
-            log.error(
-                    "checkProxyCasTicket during the ProxyTicketValidator initialization with IllegalAccessException:",
+            log.error("checkProxyCasTicket during the ProxyTicketValidator initialization with IllegalAccessException:",
                     e);
             return null;
         } catch (ClassNotFoundException e) {
-            log.error(
-                    "checkProxyCasTicket during the ProxyTicketValidator initialization with ClassNotFoundException:",
+            log.error("checkProxyCasTicket during the ProxyTicketValidator initialization with ClassNotFoundException:",
                     e);
             return null;
         }
@@ -402,16 +402,21 @@ public class Cas2Authenticator implements NuxeoAuthenticationPlugin, NuxeoAuthen
     protected String checkCasTicket(String ticket, HttpServletRequest httpRequest) {
         ServiceTicketValidator ticketValidator;
         try {
-            ticketValidator = (ServiceTicketValidator) Framework.getRuntime().getContext().loadClass(
-                    ticketValidatorClassName).newInstance();
+            ticketValidator = (ServiceTicketValidator) Framework.getRuntime()
+                                                                .getContext()
+                                                                .loadClass(ticketValidatorClassName)
+                                                                .newInstance();
         } catch (InstantiationException e) {
-            log.error("checkCasTicket during the ServiceTicketValidator initialization with InstantiationException:", e);
+            log.error("checkCasTicket during the ServiceTicketValidator initialization with InstantiationException:",
+                    e);
             return null;
         } catch (IllegalAccessException e) {
-            log.error("checkCasTicket during the ServiceTicketValidator initialization with IllegalAccessException:", e);
+            log.error("checkCasTicket during the ServiceTicketValidator initialization with IllegalAccessException:",
+                    e);
             return null;
         } catch (ClassNotFoundException e) {
-            log.error("checkCasTicket during the ServiceTicketValidator initialization with ClassNotFoundException:", e);
+            log.error("checkCasTicket during the ServiceTicketValidator initialization with ClassNotFoundException:",
+                    e);
             return null;
         }
 
@@ -462,8 +467,9 @@ public class Cas2Authenticator implements NuxeoAuthenticationPlugin, NuxeoAuthen
         Cookie alternativeAuthPluginCookie = getCookie(httpRequest, ALTERNATIVE_AUTH_PLUGIN_COOKIE_NAME);
         if (alternativeAuthPluginCookie != null) {
             String alternativeAuthPluginName = alternativeAuthPluginCookie.getValue();
-            PluggableAuthenticationService authService = (PluggableAuthenticationService) Framework.getRuntime().getComponent(
-                    PluggableAuthenticationService.NAME);
+            PluggableAuthenticationService authService = (PluggableAuthenticationService) Framework.getRuntime()
+                                                                                                   .getComponent(
+                                                                                                           PluggableAuthenticationService.NAME);
             NuxeoAuthenticationPlugin alternativeAuthPlugin = authService.getPlugin(alternativeAuthPluginName);
             if (alternativeAuthPlugin == null) {
                 log.error(String.format("No alternative authentication plugin named %s, will remove cookie %s.",

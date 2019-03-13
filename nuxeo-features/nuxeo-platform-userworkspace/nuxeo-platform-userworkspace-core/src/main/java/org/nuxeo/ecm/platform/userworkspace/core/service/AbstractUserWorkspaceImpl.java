@@ -434,7 +434,7 @@ public abstract class AbstractUserWorkspaceImpl implements UserWorkspaceService,
 
     protected UserWorkspaceServiceImplComponent getComponent() {
         return (UserWorkspaceServiceImplComponent) Framework.getRuntime()
-                .getComponent(UserWorkspaceServiceImplComponent.NAME);
+                                                            .getComponent(UserWorkspaceServiceImplComponent.NAME);
     }
 
     protected abstract DocumentModel doCreateUserWorkspacesRoot(CoreSession unrestrictedSession, PathRef rootRef);
