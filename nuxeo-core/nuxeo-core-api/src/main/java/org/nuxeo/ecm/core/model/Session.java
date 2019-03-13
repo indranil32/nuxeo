@@ -27,6 +27,7 @@ import java.util.Map;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.IterableQueryResult;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.PartialList;
 import org.nuxeo.ecm.core.api.ScrollResult;
 import org.nuxeo.ecm.core.api.VersionModel;
@@ -48,6 +49,13 @@ public interface Session<T extends QueryFilter> {
      * @return the repository
      */
     String getRepositoryName();
+
+    /**
+     * Gets the principal that created this session.
+     *
+     * @since 11.1
+     */
+    NuxeoPrincipal getPrincipal();
 
     /**
      * Does a query.

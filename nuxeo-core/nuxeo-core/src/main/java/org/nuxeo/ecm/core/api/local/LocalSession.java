@@ -130,7 +130,7 @@ public class LocalSession extends AbstractSession implements CloseableCoreSessio
         if (repository == null) {
             throw new LocalException("No such repository: " + repositoryName);
         }
-        Session session = repository.getSession();
+        Session session = repository.getSession(principal);
         TransactionHelper.registerSynchronization(this);
         SessionInfo si = new SessionInfo(session);
         sessionHolder.set(si);

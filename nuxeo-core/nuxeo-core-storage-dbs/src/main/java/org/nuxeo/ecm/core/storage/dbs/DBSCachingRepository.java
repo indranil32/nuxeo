@@ -37,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.Lock;
 import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.PartialList;
 import org.nuxeo.ecm.core.api.ScrollResult;
 import org.nuxeo.ecm.core.api.repository.FulltextConfiguration;
@@ -416,10 +417,15 @@ public class DBSCachingRepository implements DBSRepository {
 
     @Override
     public Session getSession() {
+        return getSession(null);
+    }
+
+    @Override
+    public Session getSession(NuxeoPrincipal principal) {
         if (repository instanceof DBSRepositoryBase) {
-            return ((DBSRepositoryBase) repository).getSession(this);
+            return ((DBSRepositoryBase) repository).getSession(this, principal);
         }
-        return repository.getSession();
+        return repository.getSession(principal);
     }
 
     @Override

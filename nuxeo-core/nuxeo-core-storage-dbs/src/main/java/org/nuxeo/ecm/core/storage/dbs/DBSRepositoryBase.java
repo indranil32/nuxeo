@@ -46,6 +46,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.common.utils.ExceptionUtils;
 import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.repository.FulltextConfiguration;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
@@ -344,7 +345,16 @@ public abstract class DBSRepositoryBase implements DBSRepository {
         return getSession(this);
     }
 
+    @Override
+    public Session getSession(NuxeoPrincipal principal) {
+        return getSession(this, principal);
+    }
+
     protected Session getSession(DBSRepository repository) {
+        return getSession(repository, null);
+    }
+
+    protected Session getSession(DBSRepository repository, NuxeoPrincipal principal) {
         Transaction transaction;
         try {
             transaction = TransactionHelper.lookupTransactionManager().getTransaction();
@@ -360,14 +370,18 @@ public abstract class DBSRepositoryBase implements DBSRepository {
         }
         TransactionContext context = transactionContexts.get(transaction);
         if (context == null) {
-            context = new TransactionContext(transaction, newSession(repository));
+            context = new TransactionContext(transaction, newSession(repository, principal));
             context.init();
         }
         return context.newSession();
     }
 
     protected DBSSession newSession(DBSRepository repository) {
-        return new DBSSession(repository);
+        return newSession(repository, null);
+    }
+
+    protected DBSSession newSession(DBSRepository repository, NuxeoPrincipal principal) {
+        return new DBSSession(repository, principal);
     }
 
     public Map<Transaction, TransactionContext> transactionContexts = new ConcurrentHashMap<>();

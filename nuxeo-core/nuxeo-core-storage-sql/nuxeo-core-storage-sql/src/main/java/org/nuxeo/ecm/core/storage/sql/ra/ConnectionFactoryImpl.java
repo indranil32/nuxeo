@@ -30,6 +30,7 @@ import javax.resource.spi.ConnectionManager;
 
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.repository.FulltextConfiguration;
 import org.nuxeo.ecm.core.storage.sql.Repository;
 import org.nuxeo.ecm.core.storage.sql.Session;
@@ -160,6 +161,11 @@ public class ConnectionFactoryImpl implements Repository, org.nuxeo.ecm.core.mod
     @Override
     public org.nuxeo.ecm.core.model.Session getSession() {
         return new SQLSession(getConnection(), this);
+    }
+
+    @Override
+    public org.nuxeo.ecm.core.model.Session getSession(NuxeoPrincipal principal) {
+        return new SQLSession(getConnection(), this, principal);
     }
 
     @Override

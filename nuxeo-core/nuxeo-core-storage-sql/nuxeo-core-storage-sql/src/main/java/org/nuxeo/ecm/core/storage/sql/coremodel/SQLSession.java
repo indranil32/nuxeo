@@ -43,6 +43,7 @@ import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.IterableQueryResult;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.PartialList;
 import org.nuxeo.ecm.core.api.ScrollResult;
 import org.nuxeo.ecm.core.api.VersionModel;
@@ -102,9 +103,16 @@ public class SQLSession implements Session<QueryFilter> {
 
     private final boolean copyFindFreeNameDisabled;
 
+    protected NuxeoPrincipal principal;
+
     public SQLSession(org.nuxeo.ecm.core.storage.sql.Session session, Repository repository) {
+        this(session, repository, null);
+    }
+
+    public SQLSession(org.nuxeo.ecm.core.storage.sql.Session session, Repository repository, NuxeoPrincipal principal) {
         this.session = session;
         this.repository = repository;
+        this.principal = principal;
         Node rootNode = session.getRootNode();
         root = newDocument(rootNode);
         negativeAclAllowed = Framework.isBooleanPropertyTrue(ALLOW_NEGATIVE_ACL_PROPERTY);
@@ -151,6 +159,11 @@ public class SQLSession implements Session<QueryFilter> {
     @Override
     public String getRepositoryName() {
         return repository.getName();
+    }
+
+    @Override
+    public NuxeoPrincipal getPrincipal() {
+        return principal;
     }
 
     protected String idToString(Serializable id) {

@@ -19,6 +19,7 @@
 package org.nuxeo.ecm.core.storage.dbs;
 
 import static java.lang.Boolean.TRUE;
+import static org.nuxeo.ecm.core.action.DeletionAction.ACTION_NAME;
 import static org.nuxeo.ecm.core.api.AbstractSession.DISABLED_ISLATESTVERSION_PROPERTY;
 import static org.nuxeo.ecm.core.storage.dbs.DBSDocument.FACETED_TAG;
 import static org.nuxeo.ecm.core.storage.dbs.DBSDocument.FACETED_TAG_LABEL;
@@ -102,6 +103,7 @@ import org.nuxeo.ecm.core.api.DocumentExistsException;
 import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.IterableQueryResult;
 import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.PartialList;
 import org.nuxeo.ecm.core.api.ScrollResult;
 import org.nuxeo.ecm.core.api.VersionModel;
@@ -114,6 +116,8 @@ import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.core.api.security.impl.ACLImpl;
 import org.nuxeo.ecm.core.api.security.impl.ACPImpl;
 import org.nuxeo.ecm.core.blob.BlobManager;
+import org.nuxeo.ecm.core.bulk.BulkService;
+import org.nuxeo.ecm.core.bulk.message.BulkCommand;
 import org.nuxeo.ecm.core.model.Document;
 import org.nuxeo.ecm.core.model.LockManager;
 import org.nuxeo.ecm.core.model.Session;
@@ -182,8 +186,18 @@ public class DBSSession implements Session<QueryFilter> {
 
     protected boolean isLatestVersionDisabled = false;
 
+    protected NuxeoPrincipal principal;
+
     public DBSSession(DBSRepository repository) {
+        this(repository, null);
+    }
+
+    /**
+     * @since 11.1
+     */
+    public DBSSession(DBSRepository repository, NuxeoPrincipal principal) {
         this.repository = repository;
+        this.principal = principal;
         transaction = new DBSTransactionState(repository, this);
         FulltextConfiguration fulltextConfiguration = repository.getFulltextConfiguration();
         fulltextSearchDisabled = fulltextConfiguration == null || fulltextConfiguration.fulltextSearchDisabled;
@@ -198,6 +212,11 @@ public class DBSSession implements Session<QueryFilter> {
     @Override
     public String getRepositoryName() {
         return repository.getName();
+    }
+
+    @Override
+    public NuxeoPrincipal getPrincipal() {
+        return principal;
     }
 
     @Override
@@ -899,8 +918,17 @@ public class DBSSession implements Session<QueryFilter> {
             }
         }
 
-        // remove all docs
-        transaction.removeStates(removedIds);
+        // remove root doc
+        transaction.removeStates(Collections.singleton(rootId));
+        Set<String> children = removedIds.stream().filter(id -> !id.equals(rootId)).collect(Collectors.toSet());
+        if (!children.isEmpty()) {
+            String nxql = String.format("SELECT * FROM Document WHERE ecm:uuid IN ('%s')",
+                    String.join("','", children));
+            BulkCommand command = new BulkCommand.Builder(ACTION_NAME, nxql, principal.getName())
+                                                     .repository(getRepositoryName())
+                                                     .build();
+            Framework.getService(BulkService.class).submit(command);
+        }
 
         // fix proxies back-pointers on proxy targets
         for (String targetId : targetIds) {

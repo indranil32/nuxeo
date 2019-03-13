@@ -21,6 +21,7 @@
 
 package org.nuxeo.ecm.core.model;
 
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.repository.FulltextConfiguration;
 
 /**
@@ -31,6 +32,9 @@ public interface Repository {
     String getName();
 
     Session getSession();
+
+    /** @since 11.1 */
+    Session getSession(NuxeoPrincipal principal);
 
     void shutdown();
 
