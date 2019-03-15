@@ -21,6 +21,7 @@
 
 package org.nuxeo.ecm.platform.mimetype;
 
+import org.nuxeo.ecm.platform.mimetype.interfaces.MimetypeRegistry;
 import org.nuxeo.ecm.platform.mimetype.service.MimetypeRegistryService;
 import org.nuxeo.runtime.api.Framework;
 
@@ -37,6 +38,6 @@ public final class NXMimeType {
     }
 
     public static MimetypeRegistryService getMimetypeRegistryService() {
-        return (MimetypeRegistryService) Framework.getRuntime().getComponent(MimetypeRegistryService.NAME);
+        return (MimetypeRegistryService) Framework.getService(MimetypeRegistry.class);
     }
 }

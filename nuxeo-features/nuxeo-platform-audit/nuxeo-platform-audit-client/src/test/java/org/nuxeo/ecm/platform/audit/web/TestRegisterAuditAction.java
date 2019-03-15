@@ -21,11 +21,12 @@ package org.nuxeo.ecm.platform.audit.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.platform.actions.Action;
-import org.nuxeo.ecm.platform.actions.ActionService;
-import org.nuxeo.runtime.api.Framework;
+import org.nuxeo.ecm.platform.actions.ejb.ActionManager;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
@@ -40,10 +41,12 @@ import org.nuxeo.runtime.test.runner.RuntimeFeature;
 @Deploy("org.nuxeo.ecm.platform.audit.web.tests:nxauditclient-bundle.xml")
 public class TestRegisterAuditAction {
 
+    @Inject
+    ActionManager actionService;
+
     @Test
     public void testRegistration() {
-        ActionService as = (ActionService) Framework.getRuntime().getComponent(ActionService.ID);
-        Action act1 = as.getAction("TAB_CONTENT_HISTORY");
+        Action act1 = actionService.getAction("TAB_CONTENT_HISTORY");
 
         assertEquals("action.view.history", act1.getLabel());
         assertEquals("/icons/file.gif", act1.getIcon());

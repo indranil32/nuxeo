@@ -28,6 +28,8 @@ import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.RuntimeFeature;
 
+import javax.inject.Inject;
+
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
@@ -35,12 +37,13 @@ import org.nuxeo.runtime.test.runner.RuntimeFeature;
 @Features(RuntimeFeature.class)
 @Deploy("org.nuxeo.runtime.test.tests:ListenerExtension.xml")
 public class TestEventService {
+    @Inject
+    protected EventService eventService;
 
     @Test
     public void testSend() {
-        EventService es = (EventService) Framework.getRuntime().getComponent(EventService.NAME);
         Event event = new Event("repository", "theId", this, null);
-        es.sendEvent(event);
+        eventService.sendEvent(event);
     }
 
 }
