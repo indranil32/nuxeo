@@ -1,0 +1,8 @@
+language: java
+notifications:
+  email:
+    - indranil32@gmail.com
+#deploy:
+#  provider: heroku
+#  api_key: 
+#  on: production
