@@ -1,7 +1,6 @@
 language: java
 jdk:
   - oraclejdk11
-  - oraclejdk8
 notifications:
   email:
     - indranil32@gmail.com
